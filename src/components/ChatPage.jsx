@@ -7,7 +7,6 @@ import toast from "react-hot-toast";
 import { baseURL } from "../config/AxiosHelper";
 import { getMessagess } from "../services/RoomService";
 import { timeAgo } from '../util/dateUtil';
-// import { timeAgo } from "../config/helper";
 
 const ChatPage = () => {
 
@@ -23,10 +22,10 @@ const ChatPage = () => {
 
 
     const [messages, setMessages] = useState([
-        {
-            content: "Hello",
-            sender: "Shreya Gupta",
-        }
+        // {
+        //     content: "Hello",
+        //     sender: "Shreya Gupta",
+        // }
     ]);
     const [input, setInput] = useState("");
     const inputRef = useRef(null);
@@ -178,3 +177,174 @@ const ChatPage = () => {
 }
 
 export default ChatPage
+
+
+
+
+
+
+
+// import React, { useEffect, useRef, useState } from 'react';
+// import { useNavigate } from 'react-router';
+// import SockJS from 'sockjs-client';
+// import { Stomp } from '@stomp/stompjs';
+// import toast from 'react-hot-toast';
+
+// import useChatContext from '../context/ChatContext';
+// import { baseURL } from '../config/AxiosHelper';
+// import { getMessagess } from '../services/RoomService';
+// import { timeAgo } from '../util/dateUtil';
+
+// import '../styles/ChatPage.css'; // ✅ Import the desktop-style CSS
+
+// const ChatPage = () => {
+//   const {
+//     roomId,
+//     currentUser,
+//     connected,
+//     setConnected,
+//     setRoomId,
+//     setCurrentUser,
+//   } = useChatContext();
+
+//   const navigate = useNavigate();
+//   const chatBoxRef = useRef(null);
+//   const [messages, setMessages] = useState([]);
+//   const [input, setInput] = useState('');
+//   const [stompClient, setStompClient] = useState(null);
+
+//   // Redirect if not connected
+//   useEffect(() => {
+//     if (!connected) {
+//       navigate('/');
+//     }
+//   }, [connected, roomId, currentUser, navigate]);
+
+//   // Load previous messages
+//   useEffect(() => {
+//     async function loadMessages() {
+//       try {
+//         const fetchedMessages = await getMessagess(roomId);
+//         setMessages(fetchedMessages);
+//       } catch (error) {
+//         console.error('Failed to load messages:', error);
+//       }
+//     }
+
+//     if (connected) {
+//       loadMessages();
+//     }
+//   }, [connected, roomId]);
+
+//   // Auto-scroll on new message
+//   useEffect(() => {
+//     if (chatBoxRef.current) {
+//       chatBoxRef.current.scroll({
+//         top: chatBoxRef.current.scrollHeight,
+//         behavior: 'smooth',
+//       });
+//     }
+//   }, [messages]);
+
+//   // Connect WebSocket and subscribe
+//   useEffect(() => {
+//     const connectWebSocket = () => {
+//       const sock = new SockJS(`${baseURL}/chat`);
+//       const client = Stomp.over(sock);
+
+//       client.connect({}, () => {
+//         setStompClient(client);
+//         toast.success('Connected to chat');
+
+//         client.subscribe(`/topic/room/${roomId}`, (message) => {
+//           const newMessage = JSON.parse(message.body);
+//           setMessages((prev) => [...prev, newMessage]);
+//         });
+//       });
+//     };
+
+//     if (connected) {
+//       connectWebSocket();
+//     }
+
+//     // Cleanup on unmount
+//     return () => {
+//       if (stompClient) {
+//         stompClient.disconnect();
+//       }
+//     };
+//   }, [roomId, connected]);
+
+//   // Send message
+//   const sendMessage = () => {
+//     if (stompClient && connected && input.trim()) {
+//       const message = {
+//         sender: currentUser,
+//         content: input,
+//         roomId,
+//       };
+
+//       stompClient.send(`/app/sendMessage/${roomId}`, {}, JSON.stringify(message));
+//       setInput('');
+//     }
+//   };
+
+//   // Logout / Leave room
+//   const handleLogout = () => {
+//     if (stompClient) stompClient.disconnect();
+//     setConnected(false);
+//     setRoomId('');
+//     setCurrentUser('');
+//     navigate('/');
+//   };
+
+//   return (
+//     <div className="chat-page">
+//       {/* Header */}
+//       <header className="chat-header">
+//         <div>
+//           <h1 className="room-name">Room: <span>{roomId}</span></h1>
+//         </div>
+//         <div>
+//           <h1 className="user-name">User: <span>{currentUser}</span></h1>
+//         </div>
+//         <div>
+//           <button onClick={handleLogout} className="leave-button">Leave Room</button>
+//         </div>
+//       </header>
+
+//       {/* Messages */}
+//       <main ref={chatBoxRef} className="chat-main">
+//         {messages.map((message, index) => (
+//           <div key={index} className="message-container">
+//             <p className="message-sender">{message.sender}</p>
+//             <p className="message-content">{message.content}</p>
+//             {message.timeStamp && (
+//               <p className="message-time">{timeAgo(message.timeStamp)}</p>
+//             )}
+//           </div>
+//         ))}
+//       </main>
+
+//       {/* Input field */}
+//       <div className="message-input-container">
+//         <input
+//           value={input}
+//           onChange={(e) => setInput(e.target.value)}
+//           onKeyDown={(e) => {
+//             if (e.key === 'Enter') sendMessage();
+//           }}
+//           type="text"
+//           className="message-input"
+//           placeholder="Type your message here..."
+//         />
+//         <button onClick={sendMessage} className="send-button">Send</button>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default ChatPage;
+
+
+
